@@ -5,6 +5,7 @@ var tiles;
 var score;
 var lasttile;
 function setup() {
+	lasttile = 0;
 	createCanvas(800,800);
 	score = 0;
 	gameend = true;
