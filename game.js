@@ -23,8 +23,8 @@ function draw() {
 		fill(color(255, 255, 255));
 		stroke(color(255, 255, 255));
 		textAlign(CENTER, CENTER);
-		text("Game Over", 400, 400);
-		text(score - (gamewidth/50), 400, 450);
+		text("Game Over", gamewidth/2, gameheight/2);
+		text(score - (gamewidth/50), gamewidth/2, 5*gameheight/8);
 		return;
 	}
 	if (gamestart) {
@@ -71,7 +71,7 @@ function mousePressed() {
 			offset = 0;
 			supposedoffset = 0;
 			for (var i = 4; i >= 0; i --) {
-				summontile(200*i);
+				summontile(gameheight/4*i);
 			}
 			return false;
 		}
@@ -95,8 +95,8 @@ function player_function() {
 					(this.pos.x < tiles[i].pos.x + tiles[i].size.x) &&
 					(this.pos.x + this.size.x > tiles[i].pos.x)
 				) && (
-					(this.pos.y + offset < tiles[i].pos.y + tiles[i].size.y + offset) &&
-					(this.pos.y + offset + this.size.y > tiles[i].pos.y + offset)
+					(this.pos.y < tiles[i].pos.y + tiles[i].size.y) &&
+					(this.pos.y + this.size.y > tiles[i].pos.y)
 				)
 			) {
 				if (!this.collide(tiles[i])) {
@@ -111,8 +111,8 @@ function player_function() {
 				if (this.vel.y > 0 && t.pos.y + t.size.y + offset > this.pos.y + offset) { //player base is above tile and falling
 				this.vel = new createVector(0, -12);
 				this.pos.y = t.pos.y - this.size.y;
-				if (800 - t.pos.y - offset > 0)
-					addoffset(800 - t.pos.y - offset);
+				if (gameheight - t.pos.y - offset > 0)
+					addoffset(gameheight - t.pos.y - offset);
 				}
 				return true;
 			default: return false;
@@ -121,14 +121,14 @@ function player_function() {
 	this.effectPhysics = function() {
 		var tmp_x = this.pos.x + this.vel.x;
 		this.pos = new createVector(
-			(tmp_x < -this.size.x/2 ? tmp_x + 800 :
-				(tmp_x > 799 - this.size.x/2 ? tmp_x - 800 : tmp_x)
+			(tmp_x < -this.size.x/2 ? tmp_x + gamewidth :
+				(tmp_x > gamewidth - 1 - this.size.x/2 ? tmp_x - gamewidth : tmp_x)
 			), this.pos.y + this.vel.y);
 		this.vel = new createVector(this.vel.x*0.8, this.vel.y*0.99 + 0.3);
 		if (Math.abs(this.vel.x) < 1) {
 			this.vel.x = 0;
 		}
-		if (this.pos.y + offset - gameheight/4 > 800 - this.size.y) {
+		if (this.pos.y + offset - gameheight/4 > gameheight - this.size.y) {
 			gameend = true;
 		}
 	};
@@ -148,15 +148,15 @@ function tile(x, y, sx, sy, t) {
 }
 function begintiles() {
 	tiles = [];
-	for (var i = 0; i < 800 / 50; i ++) {
-		tiles.push(new tile(10 + i * 50, 780, 30, 10, 1));
+	for (var i = 0; i < gamewidth / 50; i ++) {
+		tiles.push(new tile(10 + i * 50, gameheight - 20, 30, 10, 1));
 	}
 }
-function deleteunneededtiles() {
+function deleteunneededtiles() { //does not actually delete, just renders elements unused
 	for (var i = score; i < tiles.length; i ++) {
-		if (tiles[i].pos.y + offset > 800) {
+		if (tiles[i].pos.y + offset > gameheight) {
 			score ++;
-			summontile(tiles[i].pos.y - 800);
+			summontile(tiles[i].pos.y - gameheight);
 		}
 	}
 }
