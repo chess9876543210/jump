@@ -49,8 +49,10 @@ function draw() {
 	player.effectPhysics();
 	player.collides();
 	deleteunneededtiles();
-	if (offset < supposedoffset) {
+	if (Math.ceil(offset) < supposedoffset) {
 		offset += (supposedoffset - offset)*0.1;
+	} else {
+		offset = supposedoffset;
 	}
 	
 	for (var i = 0; i < tiles.length; i ++) {
