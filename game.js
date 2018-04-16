@@ -2,12 +2,16 @@ var player;
 var gameend;
 var gamestart;
 var tiles;
+var offset;
+var supposedoffset;
 var score;
-var lasttile;
+var gamewidth = 800;
+var gameheight = 800;
 function setup() {
-	lasttile = 0;
-	createCanvas(800,800);
-	score = 0;
+	createCanvas(gamewidth, gameheight);
+	score = gamewidth / 50 + 1;
+	offset = 0;
+	supposedoffset = 0;
 	gameend = true;
 	gamestart = true;
 	player = new player_function();
@@ -20,12 +24,13 @@ function draw() {
 		stroke(color(255, 255, 255));
 		textAlign(CENTER, CENTER);
 		text("Game Over", 400, 400);
-		text(lasttile, 400, 450);
+		text(score - (gamewidth/50), 400, 450);
 		return;
 	}
 	if (gamestart) {
-		score = 0;
-		lasttile = 800 / 50 + 1;
+		offset = 0;
+		supposedoffset = 0;
+		score = gamewidth / 50 + 1;
 		begintiles();
 		background(color(128, 128, 0));
 		player.effectPhysics();
@@ -40,18 +45,20 @@ function draw() {
 	player.effectPhysics();
 	player.collides();
 	deleteunneededtiles();
-	if (player.pos.y > 300);
+	if (offset < supposedoffset) {
+		offset += (supposedoffset - offset)*0.1;
+	}
 	
 	for (var i = 0; i < tiles.length; i ++) {
 		tiles[i].draw();
 	}
 	player.draw();
-	text(lasttile, 400, 50);
+	text(score - (gamewidth/50), gamewidth/2, 50);
 }
 function mousePressed() {
 	if (gameend) {
 		if (mouseButton == LEFT) {
-			player.pos = new createVector(400, 10);
+			player.pos = new createVector(gamewidth/2, 10);
 			gameend = false;
 			gamestart = true;
 			begintiles();
@@ -61,7 +68,8 @@ function mousePressed() {
 	if (gamestart) {
 		if (mouseButton == LEFT) {
 			gamestart = false;
-			score = 0;
+			offset = 0;
+			supposedoffset = 0;
 			for (var i = 4; i >= 0; i --) {
 				summontile(200*i);
 			}
@@ -72,7 +80,7 @@ function mousePressed() {
 }
 function player_function() {
 	this.size = new createVector(30, 30);
-	this.pos = new createVector(400 - this.size.x/2, 600 - this.size.y/2);
+	this.pos = new createVector(gamewidth/2 - this.size.x/2, 3*gameheight/4 - this.size.y/2);
 	this.vel = new createVector(0, 0);
 	this.addVel = function(v) {
 		this.vel = new createVector(this.vel.x + v.x, this.vel.y + v.y);
@@ -87,8 +95,8 @@ function player_function() {
 					(this.pos.x < tiles[i].pos.x + tiles[i].size.x) &&
 					(this.pos.x + this.size.x > tiles[i].pos.x)
 				) && (
-					(this.pos.y < tiles[i].pos.y + tiles[i].size.y + score) &&
-					(this.pos.y + this.size.y > tiles[i].pos.y + score)
+					(this.pos.y + offset < tiles[i].pos.y + tiles[i].size.y + offset) &&
+					(this.pos.y + offset + this.size.y > tiles[i].pos.y + offset)
 				)
 			) {
 				if (!this.collide(tiles[i])) {
@@ -100,11 +108,11 @@ function player_function() {
 	this.collide = function(t) {
 		switch (t.type) {
 			case 1:
-				if (this.vel.y > 0) {
+				if (this.vel.y > 0 && t.pos.y + t.size.y + offset > this.pos.y + offset) { //player base is above tile and falling
 				this.vel = new createVector(0, -12);
-				this.pos.y = t.pos.y - this.size.y + score;
-				score += 800 - t.pos.y - score;
-				//summontile(- score);
+				this.pos.y = t.pos.y - this.size.y;
+				if (800 - t.pos.y - offset > 0)
+					addoffset(800 - t.pos.y - offset);
 				}
 				return true;
 			default: return false;
@@ -120,13 +128,13 @@ function player_function() {
 		if (Math.abs(this.vel.x) < 1) {
 			this.vel.x = 0;
 		}
-		if (this.pos.y > 800 - this.size.y) {
+		if (this.pos.y + offset - gameheight/4 > 800 - this.size.y) {
 			gameend = true;
 		}
 	};
 	this.draw = function() {
 		fill(color(0));
-		rect(this.pos.x, this.pos.y, this.size.x, this.size.y);
+		rect(this.pos.x, this.pos.y + offset - gameheight/4, this.size.x, this.size.y);
 	};
 }
 function tile(x, y, sx, sy, t) {
@@ -135,7 +143,7 @@ function tile(x, y, sx, sy, t) {
 	this.type = t;
 	this.draw = function() {
 		fill(color(0, 255, 0));
-		rect(this.pos.x, this.pos.y + score, this.size.x, this.size.y);
+		rect(this.pos.x, this.pos.y + offset - gameheight/4, this.size.x, this.size.y);
 	};
 }
 function begintiles() {
@@ -145,13 +153,16 @@ function begintiles() {
 	}
 }
 function deleteunneededtiles() {
-	for (var i = lasttile; i < tiles.length; i ++) {
-		if (tiles[i].pos.y + score > 800) {
-			lasttile ++;
+	for (var i = score; i < tiles.length; i ++) {
+		if (tiles[i].pos.y + offset > 800) {
+			score ++;
 			summontile(tiles[i].pos.y - 800);
 		}
 	}
 }
 function summontile(y) {
 	tiles.push(new tile(15 + Math.random() * (width - 45), y, 30, 10, 1));
+}
+function addoffset(num) {
+	supposedoffset = offset + num;
 }
