@@ -68,7 +68,7 @@ function keyPressed() {
 			mouseUsed = false;
 			break;
 		case RIGHT_ARROW:
-			player.addVel(new createVector(3, 0);
+			player.addVel(new createVector(3, 0));
 			mouseUsed = false;
 		case UP_ARROW:
 		case DOWN_ARROW:
