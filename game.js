@@ -72,9 +72,6 @@ function keyPressed() {
 			mouseUsed = false;
 		case UP_ARROW:
 		case DOWN_ARROW:
-		case ENTER:
-		case RETURN:
-		case ' ':
 			if (gameend) {
 				player.pos = new createVector(gamewidth/2, 10);
 				gameend = false;
