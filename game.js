@@ -7,6 +7,7 @@ var supposedoffset;
 var score;
 var gamewidth = 800;
 var gameheight = 800;
+var mouseUsed = true;
 function setup() {
 	createCanvas(gamewidth, gameheight);
 	score = gamewidth / 50 + 1;
@@ -39,9 +40,9 @@ function draw() {
 		return;
 	}
 	background(color(255, 255, 0));
-	player.addVel(new createVector(
-		(mouseX - (player.pos.x + player.size.x/2)) / 40, 0)
-	);
+	if (mouseUsed) {
+		mouseMovePlayer();
+	}
 	player.effectPhysics();
 	player.collides();
 	deleteunneededtiles();
@@ -55,6 +56,43 @@ function draw() {
 	player.draw();
 	text(score - (gamewidth/50), gamewidth/2, 50);
 }
+function mouseMovePlayer() {
+	player.addVel(new createVector(
+		(mouseX - (player.pos.x + player.size.x/2)) / 40, 0)
+	);
+}
+function keyPressed() {
+	switch (keyCode) {
+		case LEFT_ARROW:
+			player.addVel(new createVector(-3, 0);
+			mouseUsed = false;
+			break;
+		case RIGHT_ARROW:
+			player.addVel(new createVector(3, 0);
+			mouseUsed = false;
+		case UP_ARROW:
+		case DOWN_ARROW:
+		case ENTER:
+		case RETURN:
+		case ' ':
+			if (gameend) {
+				player.pos = new createVector(gamewidth/2, 10);
+				gameend = false;
+				gamestart = true;
+				begintiles();
+			}
+			if (gamestart) {
+				gamestart = false;
+				offset = 0;
+				supposedoffset = 0;
+				for (var i = 4; i >= 0; i --) {
+					summontile(gameheight/4*i);
+				}
+			}
+			mouseUsed = false;
+			break;		
+	}
+}
 function mousePressed() {
 	if (gameend) {
 		if (mouseButton == LEFT) {
@@ -62,6 +100,7 @@ function mousePressed() {
 			gameend = false;
 			gamestart = true;
 			begintiles();
+			mouseUsed = true;
 			return false;
 		}
 	}
@@ -73,6 +112,7 @@ function mousePressed() {
 			for (var i = 4; i >= 0; i --) {
 				summontile(gameheight/4*i);
 			}
+			mouseUsed = true;
 			return false;
 		}
 	}
