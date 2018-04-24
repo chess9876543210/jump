@@ -64,7 +64,7 @@ function mouseMovePlayer() {
 function keyPressed() {
 	switch (keyCode) {
 		case LEFT_ARROW:
-			player.addVel(new createVector(-3, 0);
+			player.addVel(new createVector(-3, 0));
 			mouseUsed = false;
 			break;
 		case RIGHT_ARROW:
