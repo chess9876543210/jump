@@ -96,6 +96,15 @@ function keyPressed() {
 			break;		
 	}
 }
+function keyReleased() {
+	switch (keyCode) {
+		case LEFT_ARROW:
+		case RIGHT_ARROW:
+			keyboardDir = 0;
+			mouseUsed = false;
+			break;
+	}
+}
 function mousePressed() {
 	if (gameend) {
 		if (mouseButton == LEFT) {
