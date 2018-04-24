@@ -8,6 +8,7 @@ var score;
 var gamewidth = 800;
 var gameheight = 800;
 var mouseUsed = true;
+var keyboardDir = 0;
 function setup() {
 	createCanvas(gamewidth, gameheight);
 	score = gamewidth / 50 + 1;
@@ -42,6 +43,8 @@ function draw() {
 	background(color(255, 255, 0));
 	if (mouseUsed) {
 		mouseMovePlayer();
+	} else {
+		keyboardMovePlayer();
 	}
 	player.effectPhysics();
 	player.collides();
@@ -61,14 +64,17 @@ function mouseMovePlayer() {
 		(mouseX - (player.pos.x + player.size.x/2)) / 40, 0)
 	);
 }
+function keyboardMovePlayer() {
+	player.addVel(new createVector(keyboardDir, 0));
+}
 function keyPressed() {
 	switch (keyCode) {
 		case LEFT_ARROW:
-			player.addVel(new createVector(-3, 0));
+			keyboardDir = -3;
 			mouseUsed = false;
 			break;
 		case RIGHT_ARROW:
-			player.addVel(new createVector(3, 0));
+			keyboardDir = 3;
 			mouseUsed = false;
 		case UP_ARROW:
 		case DOWN_ARROW:
