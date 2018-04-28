@@ -1,5 +1,6 @@
 # jump
-A 2D game played with mouse
+A 2D game
+Play by moving the mouse or pressing left/right arrow keys
 
 [Play now!](https://chess9876543210.github.io/jump/)
 
