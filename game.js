@@ -83,8 +83,7 @@ function keyPressed() {
 				gameend = false;
 				gamestart = true;
 				begintiles();
-			}
-			if (gamestart) {
+			} else if (gamestart) {
 				gamestart = false;
 				offset = 0;
 				supposedoffset = 0;
@@ -115,8 +114,7 @@ function mousePressed() {
 			mouseUsed = true;
 			return false;
 		}
-	}
-	if (gamestart) {
+	} else if (gamestart) {
 		if (mouseButton == LEFT) {
 			gamestart = false;
 			offset = 0;
